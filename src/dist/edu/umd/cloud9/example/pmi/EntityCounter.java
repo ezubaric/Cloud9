@@ -86,6 +86,27 @@ public class EntityCounter extends Configured implements Tool {
 				sum += iter.next().get();
 			}
 			SumValue.set(sum);
+      if (sum > 100)
+        context.write(key, SumValue);
+		}
+	}
+
+  	// reducer: sums up all the counts
+	private static class EntityCounterCombiner extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+		// reuse objects
+		private final static IntWritable SumValue = new IntWritable();
+
+		@Override
+		public void reduce(Text key, Iterable<IntWritable> values,
+				Context context) throws IOException, InterruptedException {
+			// sum up values
+			Iterator<IntWritable> iter = values.iterator();
+			int sum = 0;
+			while (iter.hasNext()) {
+				sum += iter.next().get();
+			}
+			SumValue.set(sum);
 			context.write(key, SumValue);
 		}
 	}
@@ -133,7 +154,7 @@ public class EntityCounter extends Configured implements Tool {
 		job.setOutputValueClass(IntWritable.class);
 
 		job.setMapperClass(EntityCounterMapper.class);
-		job.setCombinerClass(EntityCounterReducer.class);
+		job.setCombinerClass(EntityCounterCombiner.class);
 		job.setReducerClass(EntityCounterReducer.class);
 
 		// Delete the output directory if it exists already
