@@ -7,10 +7,14 @@ public class BracketResults implements Iterator<String> {
   private int index;
   private int length;
 
-  public BracketResults(String source) {
+  public void resetString(String source) {
     this.data = source;
-    this.index = source.indexOf('<', this.index) + 2;
-    this.length = this.data.length();
+    this.index = source.indexOf('<') + 2;
+    this.length = this.data.length();    
+  }
+
+  public BracketResults(String source) {
+      resetString(source);
   }
 
   @Override
@@ -21,6 +25,10 @@ public class BracketResults implements Iterator<String> {
   @Override
   public String next() {
     int end = this.data.indexOf('>', this.index) - 1;
+    if (end < this.index) {
+	end = this.length;
+	System.out.println("~" + this.data.substring(this.index, end) + "~");
+    }
     String result = this.data.substring(this.index, end);
 
     this.index = this.data.indexOf('<', end);
@@ -29,15 +37,24 @@ public class BracketResults implements Iterator<String> {
     return result;
   }
 
+  public int position() {
+      return this.index;
+  }
+
+  public void skip(int index) {
+      this.index = index;
+  }
+
   @Override
   public void remove() {}
 
   public static void main(String [] args) {
-    System.out.println("HERE");
 
-    Iterator np_blocks = new BracketResults("< George Bush > and < Bill Clinton > went to the < Kremlin >");
+    BracketResults np_blocks = new BracketResults("");
+    np_blocks.resetString("< George Bush > and < Bill Clinton > went to the < Kremlin >");
     while(np_blocks.hasNext()) {
       System.out.println("~" + np_blocks.next() + "~");
     }
   }
+
 }

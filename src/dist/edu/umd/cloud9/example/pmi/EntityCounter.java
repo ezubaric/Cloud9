@@ -58,6 +58,7 @@ public class EntityCounter extends Configured implements Tool {
 		// reuse objects to save overhead of object creation
 		private final static IntWritable one = new IntWritable(1);
 		private Text entity = new Text();
+		private Text empty_entity = new Text("");
 
 		@Override
 		public void map(LongWritable key, Text value, Context context) throws IOException,
@@ -66,6 +67,9 @@ public class EntityCounter extends Configured implements Tool {
 			while (nps.hasNext()) {
 				entity.set((String)nps.next());
 				context.write(entity, one);
+
+				// And a dummy entity so we can normalize
+				context.write(empty_entity, one);
 			}
 		}
 	}
@@ -86,7 +90,7 @@ public class EntityCounter extends Configured implements Tool {
 				sum += iter.next().get();
 			}
 			SumValue.set(sum);
-      if (sum > 100)
+      if (sum > PmiReducer.MIN_ENTITY_COUNT)
         context.write(key, SumValue);
 		}
 	}
