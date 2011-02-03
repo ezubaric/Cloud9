@@ -1,11 +1,11 @@
 /*
  * Cloud9: A MapReduce Library for Hadoop
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You may
  * obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0 
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,16 +49,16 @@ public class TransProbReducer extends Reducer<PairOfStrings, FloatWritable, Pair
 	}
     }
 
-	
+
     // reuse objects
     private final static FloatWritable value = new FloatWritable();
     private float marginal = -1.0f;
     private String left = null;
-	
+
     @Override
     public void reduce(PairOfStrings key, Iterable<FloatWritable> values,
 		       Context context) throws IOException, InterruptedException {
-	// sum up values	
+	// sum up values
 	Iterator<FloatWritable> iter = values.iterator();
 	float sum = 0.0f;
 
@@ -82,18 +82,15 @@ public class TransProbReducer extends Reducer<PairOfStrings, FloatWritable, Pair
 		marginal < sum)
 		throw new MarginalUndefined("Invalid marginal (" +
 					    marginal + " for \"" +
-					    left + "\"):" + 
+					    left + "\"):" +
 					    key.getLeftElement() + "," + sum);
 	    */
 
 	    value.set(sum / marginal);
 
-	    System.out.println("~" + key.getLeftElement() + " " +
-			       left + " " + 
-			       key.getRightElement() + " " + 
-			       value.get());
+      context.write(key, value);
 	}
-	context.write(key, value);
+
     }
 }
-    
+

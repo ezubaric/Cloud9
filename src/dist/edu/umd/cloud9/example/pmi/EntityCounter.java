@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * <li>[num-reducers] number of reducers</li>
  * </ul>
  *
- * @author Jimmy Lin
+ * @author Jordan Boyd-Graber
  */
 public class EntityCounter extends Configured implements Tool {
 	private static final Logger sLogger = Logger.getLogger(EntityCounter.class);
