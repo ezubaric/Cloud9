@@ -73,7 +73,9 @@ public class PmiReducer extends Reducer<PairOfStrings, FloatWritable, PairOfStri
 
   @Override
     public void reduce(PairOfStrings key, Iterable<FloatWritable> values,
-                       Context context) throws IOException, InterruptedException {
+                       Context context)
+    throws IOException, InterruptedException {
+
     // sum up values
     Iterator<FloatWritable> iter = values.iterator();
     float sum = 0;
